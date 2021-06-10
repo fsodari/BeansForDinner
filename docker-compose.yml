@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+    web:
+        build: .
+        container_name: BeansForDinner
+        ports:
+            - 5000:5000
+        volumes:
+            - .:/BeansForDinner
+networks:
+    default:
+        external:
+            name: npm-network
