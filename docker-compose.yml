@@ -2,13 +2,15 @@ version: "3"
 
 services:
     web:
+        env_file:
+            - prod_env.env
         build: .
         container_name: BeansForDinner
         ports:
             - 5000:5000
         volumes:
             - .:/BeansForDinner
-networks:
-    default:
-        external:
-            name: npm-network
+# networks:
+#     default:
+#         external:
+#             name: npm-network
