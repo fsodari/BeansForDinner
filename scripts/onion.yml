@@ -1,0 +1,9 @@
+version: "1"
+name: "Onion"
+variation:
+  - yellow
+  - red
+  - white
+operations:
+  - chop: "Chop {name} using fancy method."
+  - slice:

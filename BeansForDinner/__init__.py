@@ -1,13 +1,18 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from BeansForDinner.recipe import Recipe
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-
+    app.config.from_pyfile('defaultconfig.py')
+    # app.config['DEBUG'] = True
+    # app.config['SECRET_KEY'] = 'updatethis'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../data/beans_db.sqlite'
     db.init_app(app)
 
     login_manager = LoginManager()
