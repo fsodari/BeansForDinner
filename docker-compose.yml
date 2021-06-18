@@ -1,16 +1,27 @@
 version: "3"
 
+secrets:
+    SECRET_KEY:
+        file: .secrets/secret_key.txt
+    DB_ROOT_PWD:
+        file: .secrets/db_root_pwd.txt
+    MYSQL_PWD:
+        file: .secrets/mysql_pwd.txt
 services:
     web:
-        env_file:
-            - prod_env.env
-        build: .
         container_name: BeansForDinner
         restart: always
+        environment:
+            FLASK_APP: BeansForDinner
+            SECRET_KEY__FILE: /run/secrets/SECRET_KEY
+            DEBUG: 'True'
+            SQLALCHEMY_DATABASE_URI: sqlite:////data/beans_db.sqlite
+
+        build: .
         ports:
             - 5000:80
         volumes:
-            - .:/BeansForDinner
+            - ./data:/data
 networks:
     default:
         external:
