@@ -13,40 +13,44 @@ import yaml
 def rcpf_init(self:Recipe, params:dict):
     pass
 
-def rcpf_name(name:str) -> str:
+def rcpf_name(self:Recipe, name:str) -> str:
     return name
 
-def rcpf_cooking_time(cooking_time:float) -> float:
+def rcpf_cooking_time(self: Recipe, cooking_time:float) -> float:
     return cooking_time
 
 # Populate/update methods if they exist. easy.
 def get_main_methods(config:dict, methods:dict) -> dict:
     if 'name' in config:
-        methods['name'] = lambda self: rcpf_name(config['name'])
+        methods['name'] = lambda self: rcpf_name(self, config['name'])
     if 'cooking_time' in config:
-        methods['cooking_time'] = lambda self: rcpf_cooking_time(config['cooking_time'])
+        methods['cooking_time'] = lambda self: rcpf_cooking_time(self, config['cooking_time'])
     return methods
-    
-# Generates a recipe from a collection and a selection.
-def CollectionFactory(config:dict, which:str):
-    # Find source of the specific recipe we will implement
-    recipe_choice = config['variants'][which]
-    # Create a new class from the source
-    with open(recipe_choice['source'], 'r') as stream:
-        sub_config = yaml.safe_load(stream)
-    # Use methods for the class from the collection sub recipe defaults.
-    class_name = sub_config['name']
-    methods = get_main_methods(sub_config, {})
-    # Now check if the collection recipe overrides anything. Again, need a better way.
-    if 'name' in recipe_choice:
-        class_name = recipe_choice['name']
-    methods = get_main_methods(recipe_choice, methods)
+# Set defaults
+def override_main_methods(self:Recipe, config:dict):
+    if 'name' in config:
+        setattr(self, 'name', lambda self: rcpf_name(self, config['name']))
+    if 'cooking_time' in config:
+        setattr(self, 'cooking_time', lambda self: rcpf_cooking_time(self, config['cooking_time']))
 
-    # Make a __new__ method that returns the correct recipe class
-    return type(class_name, (Recipe,), methods)
-
+# Atomic recipe factory
 def AtomicRecipeFactory(config:dict):
     methods = get_main_methods(config, {})
+    return type(config['name'], (Recipe,), methods)
+
+def collection_new(cls:Recipe, variants:dict, which:str):
+    recipe_choice = variants[which]
+    inst = RecipeFactory(recipe_choice['source'])
+    # Apply collection overrides
+    override_main_methods(inst, recipe_choice)
+    return inst()
+
+# Collection Factory.
+def CollectionFactory(config:dict):
+    # Find source of the specific recipe we will implement
+    variants = config['variants']
+    methods = get_main_methods(config, {})
+    methods['__new__'] = lambda cls, which: collection_new(cls, variants, which)
     return type(config['name'], (Recipe,), methods)
 
 # Params is a dict of class definitions
@@ -57,7 +61,7 @@ def composite_init(self:Recipe, defaults:dict, params:dict={}):
         if p in defaults:
             defaults[p] = params[p]
     # Update the ingredients member to have instances of all classes.
-    self.ingredients = {k:defaults[k]() for k in defaults}
+    self.ingredients = {k:defaults[k] for k in defaults}
 
 # params is a dict of classes.
 def CompositeRecipeFactory(config:dict):
@@ -70,27 +74,26 @@ def CompositeRecipeFactory(config:dict):
     # methods['ingredients'] = lambda self: 
     return type(config['name'], (Recipe,), methods)
 
-
+# Generic recipe factory creator. This will parse the config file
+# and figure out which category it is based on the config file.
 def RecipeFactory(config_file:str):
     # Read in yaml file.
     with open(config_file, 'r') as stream:
         config = yaml.safe_load(stream)
-    # Collections implementation.
+    # Collections implementation. Returns a lambda that accepts arguments.
     if 'variants' in config:
-        return lambda which: CollectionFactory(config, which)
+        return CollectionFactory(config)
     # Composite implementation
     elif 'ingredients' in config:
-        return lambda: CompositeRecipeFactory(config)
+        return CompositeRecipeFactory(config)
     # Atomic implementation
     else:
-        return lambda: AtomicRecipeFactory(config)
+        return AtomicRecipeFactory(config)
         
 if __name__ == '__main__':
     # Atomic recipe example
     # Get a new recipe factory from a yaml template. Neat.
-    steel_atomic = RecipeFactory('recipe_config/SteelCutOats.yml')
-    # Get a recipe class definition from the factory
-    steel_class = steel_atomic()
+    steel_class = RecipeFactory('recipe_config/SteelCutOats.yml')
     # Get an instance of the recipe
     steel_inst = steel_class()
     
@@ -98,26 +101,21 @@ if __name__ == '__main__':
 
     # Collection example.
     oats_coll = RecipeFactory('recipe_config/Oats.yml')
-    # Get new class definitions from the collection.
-    oats_class = oats_coll('SteelCutOats')
-    oats_class2 = oats_coll('RolledOats')
     # Get instances of the class.
-    oats_inst = oats_class()
-    oats_inst2 = oats_class2()
-
+    oats_inst = oats_coll('SteelCutOats')
+    oats_inst2 = oats_coll('RolledOats')
     print(f"Oats Collection SCO Name: {oats_inst.name()}, Cooking Time: {oats_inst.cooking_time()}")
     print(f"Oats Collection Rolled Name: {oats_inst2.name()}, Cooking Time: {oats_inst2.cooking_time()}")
 
     # Composite Recipe example
     oatmeal_comp = RecipeFactory('recipe_config/Oatmeal.yml')
-    oatmeal_class = oatmeal_comp()
     # Using default arguments
-    oatmeal_inst = oatmeal_class({})
+    oatmeal_inst = oatmeal_comp({})
     print(f"Oatmeal: Name: {oatmeal_inst.name()}")
     print(f"Oatmeal Base: {oatmeal_inst.ingredients['base'].name()}, Liquid: {oatmeal_inst.ingredients['liquid'].name()}")
 
     # Use a different ingredient from the oats collection
-    oatmeal_inst2 = oatmeal_class({'base':oats_coll('RolledOats')})
+    oatmeal_inst2 = oatmeal_comp({'base':oats_coll('RolledOats')})
 
     print(f"Oatmeal2 Base: {oatmeal_inst2.ingredients['base'].name()}, Liquid: {oatmeal_inst2.ingredients['liquid'].name()}")
     # This could be implemented in the base class
