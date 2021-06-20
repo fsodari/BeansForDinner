@@ -1,6 +1,6 @@
 # Beans For Dinner Theory
 
-Everything is a Recipe. This app will provide a Recipe base class that every class will inherit from. Everything from simple recipes like 'water' or 'steel cut oats', to more complex recipes like 'curry powder' or 'black bean enchiladas with red chili sauce' that are composites of other recipes. Since everything inherits from the same base class, everything can be modified, mixed, and matched.
+Everything is a Recipe. This app will provide a Recipe base class that every class will inherit from. Everything from simple recipes like 'water' or 'steel cut oats', to more complex recipes like 'curry powder' or 'black bean enchiladas with red chili sauce' that are composites of other recipes. Since everything inherits from the same base class, everything can be modified, mixed, and matched. This lets the user easily customize recipes with new ingredients and automatically generate formatted, shareable, printable, recipes.
 
 ## Primary Recipe Structures.
 
@@ -25,16 +25,15 @@ Atomic Recipes are subclasses of Recipe that take no other recipes as inputs. Th
 Collections are implemented using a class factory. The collection would return a recipe instance based on some user input/choice. A simple example is "oats" as a collection of "steel cut oats" and "rolled oats". Collections exist to organize recipes into logical categories. These collections can also instantiate recipes in particular ways. For example, a collection of "mushy oats" could extend "oats", but increase the standard cooking time by 30%. When creating Composite Recipes, you can specify collections as the ingredient inputs as a sort of 'type hint' so that users customizing the recipe have a list of sane options to choose from. Collections can be anything. 'curry spice blends', 'grains', 'frank's top 10 enchilada fillings'. And these can be saved in the library just like any other recipe. I see these being very useful and powerful tools.
 
 ### Composite Recipes
-Composite Recipes take other recipes as arguments. This would be something like "oatmeal" which takes "oats" and "liquid" as arguments. All recipes used in a composite recipe must be passed as inputs
+Composite Recipes take other recipes as arguments. This would be something like "oatmeal" which takes "base" and "liquid" as arguments. All ingredients used in a composite recipe must be passed as inputs to the constructor, and they must be Recipe subclasses. Reasonable defaults using collections can be supplied, but anything can be passed to a recipe for customization.
 
-
-Recipes will need to override certain base class methods/members like the name, cooking time, ingredients(other recipes), and cooking instructions. The base recipe class will use decorators(wrappers around functions) to add formatting to the user-supplied methods. Then the app will use the base class to do useful things like compile an ingredients list, generate a pretty markdown or html recipe, and save the recipe to a library.
+Composite recipes are likely to supply more complex instructions that Atomic Recipes. They may want to use an ingredients suggested cooking time, or override it if needed. Recipe instructions should depend upon the ingredients methods as much as possible to make sure recipes can be exchanged. Composites could be content aware and change procedures based on the ingredients too.
   
-
+## Examples
 
     # Recipe base class.
-    class Recipe(ABC):
-        # Derived recipes must provide the required methods.
+    class Recipe(ABC): # Abstract Base Class
+        # Derived recipes must provide these required methods.
         @abstractmethod
         def name(self) -> str:
             pass
@@ -48,7 +47,7 @@ Recipes will need to override certain base class methods/members like the name, 
     # Decorators for recipe formatting/organization
     def html_title(func):
         def wrapper(rcp:Recipe) -> str:
-            # Use func should return a string with the title
+            # Subclass title method should return a string with the title
             recipe_title = func(rcp)
             return pretty_html_title(recipe_title)
         return wrapper
@@ -77,9 +76,11 @@ Recipes will need to override certain base class methods/members like the name, 
         def name(self) -> str:
             return 'oatmeal'
 
+        # Cooking time is based on ingredients used.
         def cooking_time(self) -> float:
             return self.base.cooking_time() + self.liquid.cooking_time()
-         
+        
+        # Updated title
         def title(self):
             return f"{self.name} using {self.base.name} and {self.liquid.name}"
 
@@ -88,9 +89,17 @@ Recipes will need to override certain base class methods/members like the name, 
     formatted_title = html_title(Oatmeal.title)
     print(formatted_title(breakfast))
 
-Recipes that are composites can choose to override the
+    > (*fancy formatting*) oatmeal using steel cut oats and water
 
-Lower level recipes
+
+This demonstrates a proof of concept of this organizational pattern. If the recipes follow rules and templates, it seems like this should work. Extracting and compiling ingredients/instructions might be challenging, but it's a "solve it once" problem I hope.
+
+## YAML Defined Classes
+What? You don't think normal people will want to write recipes in python. No problem! It's python and it can do anything.
+
+These recipe classes will mainly consist of methods returning strings. We can define recipes using human-readable yaml files, then use a RecipeFactory to create classes dynamically based on the configuration. As long as recipes stick to certain templates, the factory should be able to handle all method creation.
+
+
 
 ## Set up a python virtualenvironment
 

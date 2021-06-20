@@ -1,8 +1,0 @@
-# Collections are virtual base classes. They must reference other
-name: Oats
-collection: True
-variants:
-  - SteelCutOats:
-    - cooking time: 13 # Collections can supply arguments.
-  - RolledOats:
-    - cooking time: 4.5
