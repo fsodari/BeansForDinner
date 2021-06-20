@@ -116,10 +116,16 @@ if __name__ == '__main__':
     oatmeal_inst = oatmeal_class()
 
     print(f"Oatmeal: Name: {oatmeal_inst.name()}")
-    print(f"Oatmeal Base: {oatmeal_inst.ingredients['base'].name()}, L: {oatmeal_inst.ingredients['liquid'].name()}")
+    print(f"Oatmeal Base: {oatmeal_inst.ingredients['base'].name()}, Liquid: {oatmeal_inst.ingredients['liquid'].name()}")
 
-    # Use optional ingredients
+    # Use a different ingredient
     oatmeal_class2 = oatmeal_fact({'base':'recipe_config/RolledOats.yml'})
     oatmeal_inst2 = oatmeal_class2()
 
-    print(f"Oatmeal2 Base: {oatmeal_inst2.ingredients['base'].name()}, L: {oatmeal_inst2.ingredients['liquid'].name()}")
+    print(f"Oatmeal2 Base: {oatmeal_inst2.ingredients['base'].name()}, Liquid: {oatmeal_inst2.ingredients['liquid'].name()}")
+    # This could be implemented in the base class
+    total_cook_time = 0
+    for i in oatmeal_inst.ingredients:
+        total_cook_time += oatmeal_inst.ingredients[i].cooking_time()
+    print(f"Total Cook Time: {total_cook_time}")
+
