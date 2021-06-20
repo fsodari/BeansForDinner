@@ -1,2 +1,6 @@
 __pycache__
-
+.vscode
+beans
+logs
+.secrets
+*.sqlite

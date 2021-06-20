@@ -1,1 +1,7 @@
 Flask>=2.0.1
+flask-login
+flask-sqlalchemy
+mariadb
+wheel
+pyyaml
+logging
