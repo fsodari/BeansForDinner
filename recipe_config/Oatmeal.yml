@@ -4,4 +4,5 @@ ingredients:
     # Default source is a collection.
     source: recipe_config/Oats.yml
   liquid:
+    # Default source is an atomic recipe
     source: recipe_config/Water.yml
