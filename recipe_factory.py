@@ -86,37 +86,37 @@ def RecipeFactory(config_file:str):
         return lambda: AtomicRecipeFactory(config)
         
 if __name__ == '__main__':
+    # Atomic recipe example
     # Get a new recipe factory from a yaml template. Neat.
-    sco_rcp = RecipeFactory('recipe_config/SteelCutOats.yml')
-    # Get a recipe from the factory
-    rcp_class = sco_rcp()
+    steel_atomic = RecipeFactory('recipe_config/SteelCutOats.yml')
+    # Get a recipe class definition from the factory
+    steel_class = steel_atomic()
     # Get an instance of the recipe
-    rcp_inst = rcp_class()
+    steel_inst = steel_class()
 
-    # Use a collection to get an instance.
-    # Load the collection.
-    oats_rcp = RecipeFactory('recipe_config/Oats.yml')
+    # Collection example.
+    oats_coll = RecipeFactory('recipe_config/Oats.yml')
     # Get new class definitions from the collection.
-    oats_class = oats_rcp('SteelCutOats')
-    oats_class2 = oats_rcp('RolledOats')
-
+    oats_class = oats_coll('SteelCutOats')
+    oats_class2 = oats_coll('RolledOats')
+    # Get instances of the class.
     oats_inst = oats_class()
     oats_inst2 = oats_class2()
 
-    print(f"Default SteelCutOats: Name: {rcp_inst.name()}, Cooking Time: {rcp_inst.cooking_time()}")
+    print(f"Default SteelCutOats: Name: {steel_inst.name()}, Cooking Time: {steel_inst.cooking_time()}")
     print(f"Oats Collection SCO Name: {oats_inst.name()}, Cooking Time: {oats_inst.cooking_time()}")
     print(f"Oats Collection Rolled Name: {oats_inst2.name()}, Cooking Time: {oats_inst2.cooking_time()}")
 
-    # A Composite Recipe
-    oatmeal_fact = RecipeFactory('recipe_config/Oatmeal.yml')
-    oatmeal_class = oatmeal_fact()
-    # Default
-    oatmeal_inst = oatmeal_class()
+    # Composite Recipe example
+    oatmeal_comp = RecipeFactory('recipe_config/Oatmeal.yml')
+    oatmeal_class = oatmeal_comp()
+    # Default arguments
+    oatmeal_inst = oatmeal_class({})
     print(f"Oatmeal: Name: {oatmeal_inst.name()}")
     print(f"Oatmeal Base: {oatmeal_inst.ingredients['base'].name()}, Liquid: {oatmeal_inst.ingredients['liquid'].name()}")
 
     # Use a different ingredient from the oats collection
-    oatmeal_inst2 = oatmeal_class({'base':oats_rcp('RolledOats')})
+    oatmeal_inst2 = oatmeal_class({'base':oats_coll('RolledOats')})
 
     print(f"Oatmeal2 Base: {oatmeal_inst2.ingredients['base'].name()}, Liquid: {oatmeal_inst2.ingredients['liquid'].name()}")
     # This could be implemented in the base class
@@ -124,4 +124,3 @@ if __name__ == '__main__':
     for i in oatmeal_inst.ingredients:
         total_cook_time += oatmeal_inst.ingredients[i].cooking_time()
     print(f"Total Cook Time: {total_cook_time}")
-
