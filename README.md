@@ -92,10 +92,10 @@ Composite recipes are likely to supply more complex instructions that Atomic Rec
     > (*fancy formatting*) oatmeal using steel cut oats and water
 
 
-This demonstrates a proof of concept of this organizational pattern. If the recipes follow rules and templates, it seems like this should work. Extracting and compiling ingredients/instructions might be challenging, but it's a "solve it once" problem I hope.
+This demonstrates a proof of concept of this organizational pattern. If the recipes follow rules and templates, it seems like this should work for more complex methods.
 
 ## YAML Defined Classes
-What? You don't think normal people will want to write recipes in python. No problem! It's python and it can do anything.
+What? You don't think people will want to write recipes as Python classes? No problem! It's python and Python can do anything.
 
 These recipe classes will mainly consist of methods returning strings and numbers. We can define recipes using human-readable yaml files, then use a RecipeFactory to create classes dynamically based on the configuration. As long as recipes stick to certain templates, the factory should be able to handle all method creation. These yaml templates can eventually be generated through a separate GUI app and any 'programmer files' would be abstracted away entirely.
 
