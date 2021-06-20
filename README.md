@@ -110,10 +110,9 @@ recipe_factory.py shows an implementation using sample recipes stored in recipe_
 
     pip install -r requirements.txt
 
-# Run the app using python
+## Run the recipe_factory.py test
 
-    python -m BeansForDinner
+    python recipe_factory.py
 
-# Restart and Rebuild
-
-    docker-compose build && docker-compose up -d
+## Run the recipe.py example
+    python Recipe/recipe.py
