@@ -97,7 +97,7 @@ This demonstrates a proof of concept of this organizational pattern. If the reci
 ## YAML Defined Classes
 What? You don't think normal people will want to write recipes in python. No problem! It's python and it can do anything.
 
-These recipe classes will mainly consist of methods returning strings and numbers. We can define recipes using human-readable yaml files, then use a RecipeFactory to create classes dynamically based on the configuration. As long as recipes stick to certain templates, the factory should be able to handle all method creation.
+These recipe classes will mainly consist of methods returning strings and numbers. We can define recipes using human-readable yaml files, then use a RecipeFactory to create classes dynamically based on the configuration. As long as recipes stick to certain templates, the factory should be able to handle all method creation. These yaml templates can eventually be generated through a separate GUI app and any 'programmer files' would be abstracted away entirely.
 
 recipe_factory.py shows an implementation using sample recipes stored in recipe_config
 
@@ -114,5 +114,23 @@ recipe_factory.py shows an implementation using sample recipes stored in recipe_
 
     python recipe_factory.py
 
+    (run output)
+    Default SteelCutOats: Name: Steel Cut Oats, Cooking Time: 14.0
+    Oats Collection SCO Name: Steel Cut Oats, Cooking Time: 13.0
+    Oats Collection Rolled Name: rollllled oats, Cooking Time: 5.0
+    Oatmeal: Name: Oatmeal
+    Oatmeal Base: Steel Cut Oats, Liquid: Water
+    Oatmeal2 Base: Rolled Oats, Liquid: Water
+    Total Cook Time: 14.1
+
 ## Run the recipe.py example
     python Recipe/recipe.py
+
+    *O*A*T*S*O*A*T*S*O*A*T*S*O*A*T*S*
+
+    oatmeal using steel cut oats
+
+    *******************************
+
+
+    15.0
