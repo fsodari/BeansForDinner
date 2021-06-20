@@ -1,0 +1,7 @@
+name: Oatmeal
+ingredients:
+  base:
+    # Default source
+    source: recipe_config/Oats.yml
+  liquid:
+    source: recipe_config/Water.yml
