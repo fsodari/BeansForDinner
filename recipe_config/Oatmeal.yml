@@ -1,9 +1,7 @@
 name: Oatmeal
 ingredients:
   base:
-    # Default source
-    source: recipe_config/SteelCutOats.yml
-    # Suggested collection to use in the user interface
-    collection: recipe_config/Oats.yml
+    # Default source is a collection.
+    source: recipe_config/Oats.yml
   liquid:
     source: recipe_config/Water.yml

@@ -39,6 +39,10 @@ def AtomicRecipeFactory(config:dict):
     return type(config['name'], (Recipe,), methods)
 
 def collection_new(cls:Recipe, variants:dict, which:str):
+    # Enforce a default option in collections.
+    if which is None:
+        which = next(iter(variants))
+    
     recipe_choice = variants[which]
     inst = RecipeFactory(recipe_choice['source'])
     # Apply collection overrides
@@ -50,7 +54,7 @@ def CollectionFactory(config:dict):
     # Find source of the specific recipe we will implement
     variants = config['variants']
     methods = get_main_methods(config, {})
-    methods['__new__'] = lambda cls, which: collection_new(cls, variants, which)
+    methods['__new__'] = lambda cls, which=None: collection_new(cls, variants, which)
     return type(config['name'], (Recipe,), methods)
 
 # Params is a dict of class definitions
@@ -102,7 +106,7 @@ if __name__ == '__main__':
     # Collection example.
     oats_coll = RecipeFactory('recipe_config/Oats.yml')
     # Get instances of the class.
-    oats_inst = oats_coll('SteelCutOats')
+    oats_inst = oats_coll() # Default option
     oats_inst2 = oats_coll('RolledOats')
     print(f"Oats Collection SCO Name: {oats_inst.name()}, Cooking Time: {oats_inst.cooking_time()}")
     print(f"Oats Collection Rolled Name: {oats_inst2.name()}, Cooking Time: {oats_inst2.cooking_time()}")
@@ -110,7 +114,7 @@ if __name__ == '__main__':
     # Composite Recipe example
     oatmeal_comp = RecipeFactory('recipe_config/Oatmeal.yml')
     # Using default arguments
-    oatmeal_inst = oatmeal_comp({})
+    oatmeal_inst = oatmeal_comp()
     print(f"Oatmeal: Name: {oatmeal_inst.name()}")
     print(f"Oatmeal Base: {oatmeal_inst.ingredients['base'].name()}, Liquid: {oatmeal_inst.ingredients['liquid'].name()}")
 
