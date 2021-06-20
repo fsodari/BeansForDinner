@@ -97,8 +97,9 @@ This demonstrates a proof of concept of this organizational pattern. If the reci
 ## YAML Defined Classes
 What? You don't think normal people will want to write recipes in python. No problem! It's python and it can do anything.
 
-These recipe classes will mainly consist of methods returning strings. We can define recipes using human-readable yaml files, then use a RecipeFactory to create classes dynamically based on the configuration. As long as recipes stick to certain templates, the factory should be able to handle all method creation.
+These recipe classes will mainly consist of methods returning strings and numbers. We can define recipes using human-readable yaml files, then use a RecipeFactory to create classes dynamically based on the configuration. As long as recipes stick to certain templates, the factory should be able to handle all method creation.
 
+recipe_factory.py shows an implementation using sample recipes stored in recipe_config
 
 
 ## Set up a python virtualenvironment
