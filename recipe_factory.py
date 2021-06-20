@@ -51,24 +51,22 @@ def AtomicRecipeFactory(config:dict):
 
 # Params is a dict of class definitions
 # Need to get instances of all classes.
-def composite_init(self:Recipe, cdefs:dict):
-    self.ingredients = {k:cdefs[k]()() for k in cdefs}
-
-# params is a dict of sources.
-def CompositeRecipeFactory(config:dict, params:dict):
-    methods = get_main_methods(config, {})
-    # Need to build the ingredients default classes.
-    cdef_dict = {}
-    # Add default classes.
-    for k in config['ingredients']:
-        cdef_dict[k] = RecipeFactory(config['ingredients'][k]['source'])
-
-    # Override matching parameters if supplied
+def composite_init(self:Recipe, defaults:dict, params:dict={}):
+    # Override defaults
     for p in params:
-        if p in cdef_dict:
-            cdef_dict[p] = RecipeFactory(params[p])
+        if p in defaults:
+            defaults[p] = params[p]
+    # Update the ingredients member to have instances of all classes.
+    self.ingredients = {k:defaults[k]() for k in defaults}
 
-    methods['__init__'] = lambda self: composite_init(self, cdef_dict)
+# params is a dict of classes.
+def CompositeRecipeFactory(config:dict):
+    methods = get_main_methods(config, {})
+    # Add default classes.
+    defaults = {k:RecipeFactory(config['ingredients'][k]['source'])() for k in config['ingredients']}
+
+    # Init method takes optional parameters
+    methods['__init__'] = lambda self, params={}: composite_init(self, defaults, params)
     # methods['ingredients'] = lambda self: 
     return type(config['name'], (Recipe,), methods)
 
@@ -82,7 +80,7 @@ def RecipeFactory(config_file:str):
         return lambda which: CollectionFactory(config, which)
     # Composite implementation
     elif 'ingredients' in config:
-        return lambda params: CompositeRecipeFactory(config, params)
+        return lambda: CompositeRecipeFactory(config)
     # Atomic implementation
     else:
         return lambda: AtomicRecipeFactory(config)
@@ -111,16 +109,14 @@ if __name__ == '__main__':
 
     # A Composite Recipe
     oatmeal_fact = RecipeFactory('recipe_config/Oatmeal.yml')
-    # Default parameters
-    oatmeal_class = oatmeal_fact({})
+    oatmeal_class = oatmeal_fact()
+    # Default
     oatmeal_inst = oatmeal_class()
-
     print(f"Oatmeal: Name: {oatmeal_inst.name()}")
     print(f"Oatmeal Base: {oatmeal_inst.ingredients['base'].name()}, Liquid: {oatmeal_inst.ingredients['liquid'].name()}")
 
-    # Use a different ingredient
-    oatmeal_class2 = oatmeal_fact({'base':'recipe_config/RolledOats.yml'})
-    oatmeal_inst2 = oatmeal_class2()
+    # Use a different ingredient from the oats collection
+    oatmeal_inst2 = oatmeal_class({'base':oats_rcp('RolledOats')})
 
     print(f"Oatmeal2 Base: {oatmeal_inst2.ingredients['base'].name()}, Liquid: {oatmeal_inst2.ingredients['liquid'].name()}")
     # This could be implemented in the base class

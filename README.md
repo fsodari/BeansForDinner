@@ -134,3 +134,7 @@ recipe_factory.py shows an implementation using sample recipes stored in recipe_
 
 
     15.0
+
+## Functional Programming
+
+Most of this 
