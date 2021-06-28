@@ -1,19 +1,7 @@
-import logging, sys
-logging.basicConfig(filename='logs/RecipeLog.log', level=logging.DEBUG)
-from abc import ABC, abstractmethod
+from abc import ABC
 
 # Base Class that all ingredients/recipes should inherit from.
 class Recipe(ABC):
-    # Name is a required method.
-    @classmethod
-    def name(self) -> str:
-        pass
-
-    # Cooking time is an optional method that will be set to 0 if not implemented.
-    @classmethod
-    def cooking_time(self) -> float:
-        return 0.0
-
     # These are formatting options you may want to update, but this will se a sensible default
     def title(self) -> str:
         return self.name()

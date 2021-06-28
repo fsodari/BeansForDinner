@@ -68,3 +68,6 @@ def test_collection_new():
     oats = oats_class({'which':{'name':'Groats', 'cooking_time':20.0}})
     assert oats.rcp_config['name'] == 'Groats'
     assert oats.rcp_config['cooking_time'] == 20.0
+
+def test_collection_overrides():
+    # Test overriding paramters of recipes in the collection.

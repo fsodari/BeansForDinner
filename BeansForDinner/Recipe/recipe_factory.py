@@ -20,8 +20,7 @@ def atomic_init(self:Recipe, config:dict={}):
         temp_cfg[k] = config[k]
     setattr(self, rcp_cfg_atr, temp_cfg)
 
-# Atomic recipe factory. Atomic recipes accept no ingredients as construction parameters.
-# TODO: Atomics may not contain ingredients, but their methods can be overriden.
+# Atomic recipe factory. Atomic recipes have no ingredients.
 def AtomicRecipeFactory(config:dict={}):
     class_config = {}
     class_config['__init__'] = atomic_init
@@ -32,7 +31,6 @@ def AtomicRecipeFactory(config:dict={}):
 # Params is a dict of recipe config dicts. If the param override matches, replace it.
 def composite_init(self:Recipe, config:dict={}):
     temp_cfg = getattr(self, rcp_cfg_atr)
-    print(temp_cfg)
     # Initialize default ingredients.
     for k in temp_cfg['ingredients']:
         # Override the configuration with a class
