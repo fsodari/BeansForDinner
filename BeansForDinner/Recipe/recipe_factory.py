@@ -34,7 +34,6 @@ def composite_init(self:Recipe, config:dict={}):
     
      # Create ingredients.
     for k in temp_cfg['ingredients']:
-        print(f"Ingr: {temp_cfg['ingredients'][k]}, Cfg:{config}")
         ingr_rcp = RecipeFactory(temp_cfg['ingredients'][k])
         # Override the config with a recipe class. What are types even really?
         temp_cfg['ingredients'][k] = ingr_rcp(temp_cfg['ingredients'][k])
@@ -45,7 +44,6 @@ def composite_init(self:Recipe, config:dict={}):
 # can be overriden with arguments in the constructor.
 def CompositeRecipeFactory(config:dict):
     class_config = {'__init__':composite_init, rcp_cfg:config}
-    print(f"Comp:{config}")
     return type(config['name'], (Recipe,), class_config)
 
 def collection_init(self:Recipe, config:dict={}):
@@ -68,12 +66,11 @@ def collection_init(self:Recipe, config:dict={}):
     if temp_cfg['which'] not in temp_cfg['variants']:
         temp_cfg['which'] = next(iter(temp_cfg['variants']))
     
-    # Create a new field for the choice.
+    # Create a new recipe using the choice
     recipe_choice = temp_cfg['variants'][temp_cfg['which']]
-    # Update using config
-    print(f"Coll: {recipe_choice}")
     choice = RecipeFactory(recipe_choice)(recipe_choice)
 
+    # Replace collection config with choice config.
     setattr(self, rcp_cfg, getattr(choice, rcp_cfg))
 
 # Collections contain a dict of recipes and recipe overrides.
