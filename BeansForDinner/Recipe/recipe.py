@@ -1,10 +1,10 @@
-from abc import ABC
+# Attribute used for recipe definition.
+rcp_cfg = 'rcp'
 
 # Base Class that all ingredients/recipes should inherit from.
-class Recipe(ABC):
-    # These are formatting options you may want to update, but this will se a sensible default
-    def title(self) -> str:
-        return self.name()
+class Recipe:
+    def __init__(self) -> None:
+        pass
 
     # These are detailed formatting options. They can be overridden with user customizations if you're getting super custom.
     def _title_header(self) -> str:

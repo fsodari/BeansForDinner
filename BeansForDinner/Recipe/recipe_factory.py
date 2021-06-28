@@ -1,18 +1,18 @@
 import yaml
 from .recipe import Recipe
+from .recipe import rcp_cfg
 import os
 
 # The recipe factory will create new recipe classes from human-readable yaml files, recipe templates
 # or from the user interface tools.
-
-# This is where all of the config setttings are stored in each class.
-rcp_cfg = 'rcp'
 
 def rcp_file_basename(filepath):
     return os.path.splitext(os.path.basename(filepath))[0]
 
 # Allow higher-level recipes to override lower level recipe attributes.
 def atomic_init(self:Recipe, config:dict={}):
+    # Always initialize the base class
+    Recipe.__init__(self)
     # Override attrs using ones provided in the config.
     setattr(self, rcp_cfg, {**getattr(self, rcp_cfg), **config})
 
@@ -23,6 +23,8 @@ def AtomicRecipeFactory(config:dict={}):
 
 # Params is a dict of recipe config dicts. If the param override matches, replace it.
 def composite_init(self:Recipe, config:dict={}):
+    # Always initialize the base class
+    Recipe.__init__(self)
     # Override default ingredients
     temp_cfg = getattr(self, rcp_cfg)
     if 'ingredients' in config:
@@ -32,7 +34,7 @@ def composite_init(self:Recipe, config:dict={}):
             else:
                 temp_cfg['ingredients'][k] = config['ingredients'][k]
     
-     # Create ingredients.
+    # Create ingredients.
     for k in temp_cfg['ingredients']:
         ingr_rcp = RecipeFactory(temp_cfg['ingredients'][k])
         # Override the config with a recipe class. What are types even really?
@@ -47,6 +49,8 @@ def CompositeRecipeFactory(config:dict):
     return type(config['name'], (Recipe,), class_config)
 
 def collection_init(self:Recipe, config:dict={}):
+    # Always initialize the base class.
+    Recipe.__init__(self)
     # Overrides, including 'which'
     temp_cfg = getattr(self, rcp_cfg)
     if 'variants' in config:
