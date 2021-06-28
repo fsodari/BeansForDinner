@@ -1,5 +1,6 @@
 # Collections are virtual base classes. They must reference other
 name: Oats
+which: Rolled Oats
 variants:
   Steel Cut Oats:
     source: "recipe_config/SteelCutOats.yml"

@@ -1,7 +1,11 @@
 name: Oatmeal
 ingredients:
   base:
-    source: recipe_config/SteelCutOats.yml
+    source: recipe_config/Oats.yml # Using collection as ingredient.
+    which: Steel Cut Oats
+    variants:
+      Steel Cut Oats:
+        cooking_time: 11.1
   liquid:
     source: recipe_config/Water.yml
     cooking_time: 5.0

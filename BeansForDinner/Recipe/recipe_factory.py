@@ -6,88 +6,80 @@ import os
 # or from the user interface tools.
 
 # This is where all of the config setttings are stored in each class.
-rcp_cfg_atr = 'rcp_config'
+rcp_cfg = 'rcp'
 
 def rcp_file_basename(filepath):
     return os.path.splitext(os.path.basename(filepath))[0]
 
 # Allow higher-level recipes to override lower level recipe attributes.
 def atomic_init(self:Recipe, config:dict={}):
-    print(config)
     # Override attrs using ones provided in the config.
-    temp_cfg = getattr(self, rcp_cfg_atr)
-    for k in config:
-        temp_cfg[k] = config[k]
-    setattr(self, rcp_cfg_atr, temp_cfg)
+    setattr(self, rcp_cfg, {**getattr(self, rcp_cfg), **config})
 
 # Atomic recipe factory. Atomic recipes have no ingredients.
 def AtomicRecipeFactory(config:dict={}):
-    class_config = {}
-    class_config['__init__'] = atomic_init
-    class_config[rcp_cfg_atr] = config
-
+    class_config = {'__init__':atomic_init, rcp_cfg:config}
     return type(config['name'], (Recipe,), class_config)
 
 # Params is a dict of recipe config dicts. If the param override matches, replace it.
 def composite_init(self:Recipe, config:dict={}):
-    temp_cfg = getattr(self, rcp_cfg_atr)
-    # Initialize default ingredients.
-    for k in temp_cfg['ingredients']:
-        # Override the configuration with a class
-        ingr_rcp = RecipeFactory(temp_cfg['ingredients'][k])
-        temp_cfg['ingredients'][k] = ingr_rcp
-
-    # Override ingredients.
+    # Override default ingredients
+    temp_cfg = getattr(self, rcp_cfg)
     if 'ingredients' in config:
         for k in config['ingredients']:
-            ingr_rcp = RecipeFactory(config['ingredients'][k])
-            # Override the defaults
-            temp_cfg['ingredients'][k] = ingr_rcp
-    setattr(self, rcp_cfg_atr, temp_cfg)
+            if k in temp_cfg['ingredients']:
+                temp_cfg['ingredients'][k] = {**temp_cfg['ingredients'][k], **config['ingredients'][k]}
+            else:
+                temp_cfg['ingredients'][k] = config['ingredients'][k]
+    
+     # Create ingredients.
+    for k in temp_cfg['ingredients']:
+        print(f"Ingr: {temp_cfg['ingredients'][k]}, Cfg:{config}")
+        ingr_rcp = RecipeFactory(temp_cfg['ingredients'][k])
+        # Override the config with a recipe class. What are types even really?
+        temp_cfg['ingredients'][k] = ingr_rcp(temp_cfg['ingredients'][k])
+
+    setattr(self, rcp_cfg, temp_cfg)
 
 # Composites can contain multiple recipes as ingredients. The default ingredients
 # can be overriden with arguments in the constructor.
 def CompositeRecipeFactory(config:dict):
-    class_config = {}
-    # Init method takes optional parameters
-    class_config['__init__'] = composite_init
-    class_config[rcp_cfg_atr] = config
-    # methods['ingredients'] = lambda self: 
+    class_config = {'__init__':composite_init, rcp_cfg:config}
+    print(f"Comp:{config}")
     return type(config['name'], (Recipe,), class_config)
 
-def collection_new(cls:Recipe, variants:dict, config:dict={}):
-    # Enforce a default option in collections.
-    if 'which' not in config:
-        which = next(iter(variants))
-    else:
-        which = config['which']
+def collection_init(self:Recipe, config:dict={}):
+    # Overrides, including 'which'
+    temp_cfg = getattr(self, rcp_cfg)
+    if 'variants' in config:
+        for k in config['variants']:
+            if k in temp_cfg['variants']:
+                temp_cfg['variants'][k] = {**temp_cfg['variants'][k], **config['variants'][k]}
+            else:
+                temp_cfg['variants'][k] = config['variants'][k]
     
-    # Decide what to do based on what which is...wait what?
-    try:
-        recipe_choice = variants[which]
-    except TypeError as e:
-        if type(which) is dict:
-            recipe_choice = which
-        else:
-            raise TypeError('Collection overrides must use dicts')
-    except KeyError as e:
-        if type(which) is str:
-            recipe_choice = {'name':which}
-    # If source is not in the choice, create an atomic using the name.
-    if 'source' not in recipe_choice.keys() and 'name' not in recipe_choice.keys():
-        recipe_choice['name'] = which
+    if 'which' in config:
+        temp_cfg['which'] = config['which']
+    # Enforce a default option in collections. Use first element.
+    if 'which' not in temp_cfg:
+        temp_cfg['which'] = next(iter(temp_cfg['variants']))
+
+    # If the user override doesn't match anything, stick with the default.
+    if temp_cfg['which'] not in temp_cfg['variants']:
+        temp_cfg['which'] = next(iter(temp_cfg['variants']))
     
-    recipe_class = RecipeFactory(recipe_choice)
-    return recipe_class(recipe_choice)
+    # Create a new field for the choice.
+    recipe_choice = temp_cfg['variants'][temp_cfg['which']]
+    # Update using config
+    print(f"Coll: {recipe_choice}")
+    choice = RecipeFactory(recipe_choice)(recipe_choice)
+
+    setattr(self, rcp_cfg, getattr(choice, rcp_cfg))
 
 # Collections contain a dict of recipes and recipe overrides.
 # Choose which recipe you want to use at object creation time. 
 def CollectionFactory(config:dict):
-    # Find source of the specific recipe we will implement
-    variants = config['variants']
-    class_config = {}
-    class_config[rcp_cfg_atr] = config
-    class_config['__new__'] = lambda cls, which={}: collection_new(cls, variants, which)
+    class_config = {'__init__': collection_init, rcp_cfg:config}
     return type(config['name'], (Recipe,), class_config)
 
 # Generic recipe factory creator. This will parse the config file
