@@ -29,16 +29,14 @@ def composite_init(self:Recipe, config:dict={}):
     temp_cfg = getattr(self, rcp_cfg)
     if 'ingredients' in config:
         for k in config['ingredients']:
-            if k in temp_cfg['ingredients']:
-                temp_cfg['ingredients'][k] = {**temp_cfg['ingredients'][k], **config['ingredients'][k]}
-            else:
-                temp_cfg['ingredients'][k] = config['ingredients'][k]
+            temp_cfg['ingredients'][k] = config['ingredients'][k]
     
     # Create ingredients.
     for k in temp_cfg['ingredients']:
-        ingr_rcp = RecipeFactory(temp_cfg['ingredients'][k])
+        print(temp_cfg['ingredients'][k])
+        ingr_rcp = [RecipeFactory(x)(x) for x in temp_cfg['ingredients'][k]]
         # Override the config with a recipe class. What are types even really?
-        temp_cfg['ingredients'][k] = ingr_rcp(temp_cfg['ingredients'][k])
+        temp_cfg['ingredients'][k] = ingr_rcp
 
     setattr(self, rcp_cfg, temp_cfg)
 
@@ -48,17 +46,12 @@ def CompositeRecipeFactory(config:dict):
     class_config = {'__init__':composite_init, rcp_cfg:config}
     return type(config['name'], (Recipe,), class_config)
 
-def collection_init(self:Recipe, config:dict={}):
-    # Always initialize the base class.
-    Recipe.__init__(self)
+def collection_new(cls:Recipe, config:dict={}):
     # Overrides, including 'which'
-    temp_cfg = getattr(self, rcp_cfg)
+    temp_cfg = getattr(cls, rcp_cfg)
     if 'variants' in config:
         for k in config['variants']:
-            if k in temp_cfg['variants']:
-                temp_cfg['variants'][k] = {**temp_cfg['variants'][k], **config['variants'][k]}
-            else:
-                temp_cfg['variants'][k] = config['variants'][k]
+            temp_cfg['variants'][k] = config['variants'][k]
     
     if 'which' in config:
         temp_cfg['which'] = config['which']
@@ -72,20 +65,21 @@ def collection_init(self:Recipe, config:dict={}):
     
     # Create a new recipe using the choice
     recipe_choice = temp_cfg['variants'][temp_cfg['which']]
+    print(recipe_choice)
     choice = RecipeFactory(recipe_choice)(recipe_choice)
 
-    # Replace collection config with choice config.
-    setattr(self, rcp_cfg, getattr(choice, rcp_cfg))
+    return choice
 
 # Collections contain a dict of recipes and recipe overrides.
 # Choose which recipe you want to use at object creation time. 
 def CollectionFactory(config:dict):
-    class_config = {'__init__': collection_init, rcp_cfg:config}
+    class_config = {'__new__': collection_new, rcp_cfg:config}
     return type(config['name'], (Recipe,), class_config)
 
 # Generic recipe factory creator. This will parse the config file
 # and figure out which category it is based on the config file.
 def RecipeFactory(config:dict):
+    # If a list was supplied.
     # If no source is supplied, an atomic will be used
     if 'source' in config.keys():
         config_file = config['source']
