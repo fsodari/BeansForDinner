@@ -18,7 +18,4 @@ class Collection(Recipe):
         # Create a new recipe using the choice
         recipe_choice = config['variants'][which]
         logging.info(f"Collection Choice: {recipe_choice}")
-        obj = recipe_factory.RecipeFactory(recipe_choice)
-        # Apply the collection overrides.
-        obj.override(recipe_choice)
-        return obj
+        return recipe_factory.RecipeFactory(recipe_choice)
