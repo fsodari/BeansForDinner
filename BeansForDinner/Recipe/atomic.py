@@ -7,7 +7,7 @@ class Atomic(Recipe):
         super().__init__()
         logging.info(f"Atomic Init Config: {config}")
         # Config is whatever is passed into it.
-        self.rcp = config
+        self.rcp = Recipe.merge_config(self.rcp, config)
 
     def override(self, config:dict) -> None:
         # self.rcp = self.rcp | config

@@ -12,10 +12,17 @@ def file_basename(filepath):
     return os.path.splitext(os.path.basename(filepath))[0]
 
 # Returns a recipe instance based on the contents of a config dict.
-def RecipeFactory(u_config:dict):
-    # Start with input config
+def RecipeFactory(u_config):
+    # Check what kind of config was passed. This can accept a config dict or a list of recipes to be used to make a composite.
+    try:
+        test_slice = u_config[:0]
+        return composite.Composite(u_config, from_list=True)
+    except TypeError:
+        if not hasattr(u_config, 'keys'):
+            raise TypeError("Recipe Factory User Config must be a dict or a list!")
+
     config = u_config
-    logging.info(f"User Config: {u_config}")
+    logging.info(f"User Config: {config}")
     # If a source file is provided, import the yaml file and use it as the config.
     # Any additional use config parameters are used as overrides.
     if 'source' in config.keys():

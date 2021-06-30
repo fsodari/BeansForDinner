@@ -5,17 +5,31 @@ import logging
 # Composites contain a dictionary of ingredients.
 # Ingredients are other recipes and their overrides that are used in the composite recipe.
 class Composite(Recipe):
-    def __init__(self, config:dict={}) -> None:
+    def __init__(self, config, from_list=False) -> None:
         super().__init__()
         logging.info(f"Composite Init Config: {config}")
-        self.rcp = config
-        # Create ingredients.
-        for k in self.rcp['ingredients']:
-            logging.info(f"Ingr: {self.rcp['ingredients'][k]}")
-            ingr_rcp = recipe_factory.RecipeFactory(self.rcp['ingredients'][k])
-            ingr_rcp.override(self.rcp['ingredients'][k])
-            # Override the config with a recipe class. What are types even really?
-            self.rcp['ingredients'][k] = ingr_rcp
+        # Build a composite using the supplied list as the ingredients list.
+        # Create a name by concatenating the items. "a, b, and c"
+        if from_list:
+            logging.info(f"Composite From List.")
+            # Create ingredients
+            self.rcp['ingredients'] = {}
+            for ingr_cfg in config:
+                ingr_rcp = recipe_factory.RecipeFactory(ingr_cfg)
+                ingr_rcp.override(ingr_cfg)
+                self.rcp['ingredients'][ingr_rcp.rcp['name']] = ingr_rcp
+            # Create a dumb name
+            self.rcp['name'] = ' and '.join([self.rcp['ingredients'][k].rcp['name'] for k in self.rcp['ingredients']])
+        # Build a composite from the supplied definition.
+        else:
+            self.rcp = Recipe.merge_config(self.rcp, config, merge_ingr=True)
+            # Create ingredients.
+            for k in self.rcp['ingredients']:
+                logging.info(f"Ingr: {self.rcp['ingredients'][k]}")
+                ingr_rcp = recipe_factory.RecipeFactory(self.rcp['ingredients'][k])
+                ingr_rcp.override(self.rcp['ingredients'][k])
+                # Override the config with a recipe class. What are types even really?
+                self.rcp['ingredients'][k] = ingr_rcp
 
         logging.info(f"Composite Final: {self.rcp}")
     

@@ -35,3 +35,15 @@ if __name__ == '__main__':
     for k in oatmeal2.rcp['ingredients']:
         total_cook_time += oatmeal2.rcp['ingredients'][k].rcp['cooking_time']
     print(f"Total Cook Time: {total_cook_time}")
+
+    # We can create Composites on-the-fly using a list/tuple
+    quinoa_oatmeal = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
+    # Substitute multiple ingredients for one.
+    quinoa_oatmeal.override({
+        'ingredients':{
+            'base':[
+                {'source':'test_recipes/SteelCutOats.yml'},
+                {'source':'test_recipes/Quinoa.yml'}]
+            }})
+
+    print(f"Quinoa Oatmeal Base: {quinoa_oatmeal.rcp['ingredients']['base'].rcp['name']}")

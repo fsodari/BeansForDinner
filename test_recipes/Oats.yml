@@ -10,6 +10,6 @@ variants:
     source: "test_recipes/RolledOats.yml"
     name: rollllled oats
 
-  # Oat Medley:
-  #   source: test_recipes/SteelCutOats.yml
-  #   source: test_recipes/RolledOats.yml
+  Oat Medley: # Using a list for the recipe
+    - source: test_recipes/SteelCutOats.yml
+    - source: test_recipes/RolledOats.yml
