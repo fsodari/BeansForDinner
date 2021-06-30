@@ -12,7 +12,7 @@ if __name__ == '__main__':
     # Default.
     oats = RecipeFactory({'source':'test_recipes/Oats.yml'})
     # Collection overrides are applied to base recipe.
-    print(f"Oats Collection Rolled Name: {oats.rcp['name']}, Cooking Time: {oats.rcp['name']}")
+    print(f"Oats Collection Rolled Name: {oats.rcp['name']}, Cooking Time: {oats.rcp['cooking_time']}")
 
     # Use a different option
     oats2 = RecipeFactory({'which':'Steel Cut Oats','source':'test_recipes/Oats.yml'})
