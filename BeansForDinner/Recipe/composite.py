@@ -12,14 +12,14 @@ class Composite(Recipe):
         # Create a name by concatenating the items. "a, b, and c"
         if from_list:
             logging.info(f"Composite From List.")
-            # Create a dumb name
-            self.rcp['name'] = ' and '.join([ingr['name'] for ingr in config])
             # Create ingredients
             self.rcp['ingredients'] = {}
             for ingr_cfg in config:
                 ingr_rcp = recipe_factory.RecipeFactory(ingr_cfg)
                 ingr_rcp.override(ingr_cfg)
-                self.rcp['ingredients'][ingr_cfg['name']] = ingr_rcp
+                self.rcp['ingredients'][ingr_rcp.rcp['name']] = ingr_rcp
+            # Create a dumb name
+            self.rcp['name'] = ' and '.join([self.rcp['ingredients'][k].rcp['name'] for k in self.rcp['ingredients']])
         # Build a composite from the supplied definition.
         else:
             self.rcp = Recipe.merge_config(self.rcp, config, merge_ingr=True)
