@@ -1,37 +1,38 @@
 from BeansForDinner import RecipeFactory
 
-import logging
-# logging.basicConfig(filename='tests/logs/collection.log', encoding='utf-8', level=logging.DEBUG)
-collection_logger = logging.getLogger('CollectionLogger')
+def test_default():
+    oats = RecipeFactory({'source':'test_recipes/Oats.yml'})
 
-def test_collection_default():
-
-    oats_inst = RecipeFactory({'source':'test_recipes/Oats.yml'})
-    print(oats_inst)
-    assert oats_inst.rcp['name'] == 'rollllled oats'
+    assert oats.rcp['name'] == 'rollllled oats'
     # Make sure it's using the class overrides
-    assert oats_inst.rcp['cooking_time'] == 5.0
+    assert oats.rcp['cooking_time'] == 5.0
 
-def test_collection_option():
-    # Select a different option, must override which.
+def test_option():
+    # Select a different option. You must override 'which' in the user config now, or else it
+    # will use the default option.
     oats = RecipeFactory({'source':'test_recipes/Oats.yml', 'which':'Steel Cut Oats'})
+
     assert oats.rcp['name'] == 'Steel Cut Oats'
     assert oats.rcp['cooking_time'] == 13.0
 
-def test_collection_new():
+def test_new():
     # If the choice is not in the collection, default is created.
     oats = RecipeFactory({'source':'test_recipes/Oats.yml', 'which':'Groats'})
+
     assert oats.rcp['name'] == 'Steel Cut Oats'
 
-    # Overriding collection with variant override.
+    # Overriding collection with new variants. Do whatever you want. I don't care.
     oats = RecipeFactory({'source':'test_recipes/Oats.yml','which':'Groats','variants':{'Groats':{'name':'Groats','cooking_time':20.0}}})
+    
     assert oats.rcp['name'] == 'Groats'
     assert oats.rcp['cooking_time'] == 20.0
 
-def test_collection_overrides():
+def test_overrides():
     # Test overriding paramters of recipes in the collection.
     oats = RecipeFactory({'source':'test_recipes/Oats.yml', 'which':'Steel Cut Oats'})
-    # Overrides are just like any other recipe.
+
+    # Overrides are applied based on the returned class.
     oats.override({'name':'SCO','cooking_time':42.0})
+
     assert oats.rcp['name'] == 'SCO'
     assert oats.rcp['cooking_time'] == 42.0

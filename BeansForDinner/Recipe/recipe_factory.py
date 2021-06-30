@@ -1,81 +1,53 @@
-import yaml
 from .recipe import Recipe
+from . import atomic, collection, composite
+import yaml
 import os
 import logging
-# rcpf_logger = logging.getLogger('RecipeFactoryLogger')
+
 # The recipe factory will create new recipe classes from human-readable yaml files, recipe templates
 # or from the user interface tools.
 
-def rcp_file_basename(filepath):
+# Get base name of a file from the full path.
+def file_basename(filepath):
     return os.path.splitext(os.path.basename(filepath))[0]
 
-# Atomic recipe factory. Atomic recipes have no ingredients.
-# def atomic_factory(config:dict={}):
-    # Default configuration.
-    # class_config = {'rcp': config}
-    # logging.info(f"Atomic Factory: {config['name']}, Config: {config}")
-
-    # return type(config['name'], (Atomic,), class_config)
-    # return Atomic(config)
-
-# Composites can contain multiple recipes as ingredients. The default ingredients
-# can be overriden with arguments in the constructor.
-# def composite_factory(config:dict={}):
-    # Default configuration.
-    # class_config = {'rcp':config}
-    # logging.info(f"Composite Factory: {config['name']}, Config: {config}")
-    # return type(config['name'], (Composite,), class_config)
-    # return Composite(config)
-
-# Collections contain a dict of recipes and recipe overrides.
-# Choose which recipe you want to use at object creation time. 
-# def collection_factory(config:dict={}):
-    # class_config = {'rcp':config}
-    # logging.info(f"Collection Factory: {config['name']}, Config: {config}")
-    # return type(config['name'], (Collection,), class_config)
-    # return Collection(config)
-    
+# Returns a recipe instance based on the contents of a config dict.
 def RecipeFactory(u_config:dict):
-    # TODO: If a list was supplied, interpret it as a
-    # If no source is supplied, an atomic will be used
+    # Start with input config
     config = u_config
-    if 'source' in u_config.keys():
-        config_file = u_config['source']
-        filebasename = rcp_file_basename(config_file)
+    logging.info(f"User Config: {u_config}")
+    # If a source file is provided, import the yaml file and use it as the config.
+    # Any additional use config parameters are used as overrides.
+    if 'source' in config.keys():
+        config_file = config['source']
+        filebasename = file_basename(config_file)
         # Read in yaml file.
         try:
             with open(config_file, 'r') as stream:
                 config = yaml.safe_load(stream)
+                # If the file is empty, create a default name.
                 if config == None:
                     config = {'name':filebasename}
-                # Keep overrides.
-                logging.info(f"RF User Config: {u_config}")
-                # config = {**config, **old_cfg}
-                # config = config | old_cfg
+
+                # Apply any of the user overrides after the source is imported.
                 config = Recipe.merge_config(config, u_config, merge_var=True, merge_ingr=True)
-                logging.info(f"RF New Config: {config}")
+                logging.info(f"Recipe Factory Config: {config}")
         except FileNotFoundError:
-            # If the file doesn't exist, create a new atomic recipe using the file name.
-            if 'name' not in u_config.keys():
-                config = {'name':filebasename}
+            # If the file doesn't exist, create a new recipe using the file name.
+            if 'name' not in config.keys():
+                config['name'] = filebasename
 
     # A name is required for recipes created from a dict
     if 'name' not in config.keys():
         raise KeyError(f"Recipes must have a name! {config}")
     
-    logging.info(f"Recipe Factory: {config['name']}")
-
-    # Fix this or nah?
-    from .atomic import Atomic
-    from .collection import Collection
-    from .composite import Composite
-    # Collections implementation. Returns a lambda that accepts arguments.
+    # Decide what recipe to create based on what is in the top level config.
     if 'variants' in config:
-        return Collection(config)
+        return collection.Collection(config)
     # Composite implementation
     elif 'ingredients' in config:
-        return Composite(config)
+        return composite.Composite(config)
     # Atomic implementation
     else:
-        return Atomic(config)
+        return atomic.Atomic(config)
         

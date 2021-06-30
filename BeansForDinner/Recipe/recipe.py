@@ -4,13 +4,14 @@ import logging
 class Recipe:
     # This is the attribute where recipe information is stored.
     def __init__(self) -> None:
-        if not hasattr(self, 'rcp'):
-            self.rcp = {}
+        self.rcp = {}
         logging.info(f"Recipe Init")
 
     def override(self, config:dict) -> None:
         pass
 
+    # Replace any top level keys in orig with those in new. Also add any keys in new that are not in orig.
+    # Optionally apply the same merge to variants and ingredients lists.
     @staticmethod
     def merge_config(orig_:dict, new:dict, merge_var=False, merge_ingr=False) -> dict:
         orig = orig_

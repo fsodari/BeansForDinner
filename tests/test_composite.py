@@ -1,16 +1,23 @@
 from BeansForDinner import RecipeFactory
 
-import logging
-# logging.basicConfig(filename='tests/logs/composite.log', encoding='utf-8', level=logging.DEBUG)
-composite_logger = logging.getLogger('CompositeLogger')
-
 def test_basic():
-    oatmeal_inst = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
-    assert oatmeal_inst.rcp['name'] == 'Oatmeal'
-    assert oatmeal_inst.rcp['ingredients']['base'].rcp['cooking_time'] == 11.1
+    oatmeal = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
 
-    # You cannot reuse a class created from RecipeFactory. It must be a new instance.
-    oats2 = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
-    oats2.override({'ingredients':{'base':{'source':'test_recipes/RolledOats.yml'}}})
-    assert oats2.rcp['name'] == 'Oatmeal'
-    assert oats2.rcp['ingredients']['base'].rcp['name'] == 'Rolled Oats'
+    assert oatmeal.rcp['name'] == 'Oatmeal'
+    # Make sure the composite overrides were applied.
+    assert oatmeal.rcp['ingredients']['base'].rcp['cooking_time'] == 11.1
+
+def test_user_override():
+    # Override ingredients in the user config.
+    oats = RecipeFactory({'source':'test_recipes/Oatmeal.yml','ingredients':{'base':{'source':'test_recipes/RolledOats.yml'}}})
+    
+    assert oats.rcp['name'] == 'Oatmeal'
+    assert oats.rcp['ingredients']['base'].rcp['name'] == 'Rolled Oats'
+
+def test_override_later():
+    oats = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
+    # Override ingredients after the class is initialized.
+    oats.override({'ingredients':{'base':{'source':'test_recipes/RolledOats.yml'}}})
+
+    assert oats.rcp['name'] == 'Oatmeal'
+    assert oats.rcp['ingredients']['base'].rcp['name'] == 'Rolled Oats'
