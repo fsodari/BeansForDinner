@@ -1,7 +1,6 @@
-Flask>=2.0.1
-flask-login
-flask-sqlalchemy
-mariadb
-wheel
+# Flask>=2.0.1
+# flask-login
+# flask-sqlalchemy
+# wheel
 pyyaml
-logging
+pytest

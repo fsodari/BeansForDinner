@@ -1,9 +1,0 @@
-# Collections are virtual base classes. They must reference other
-name: Oats
-variants:
-  SteelCutOats:
-    source: "recipe_config/SteelCutOats.yml"
-    cooking_time: 13.0 # Collections can override arguments.
-  RolledOats:
-    source: "recipe_config/RolledOats.yml"
-    name: rollllled oats

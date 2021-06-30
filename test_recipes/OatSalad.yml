@@ -1,0 +1,5 @@
+name: Oat Salad
+ingredients:
+  base:
+    - source: test_recipes/RolledOats.yml
+    - source: test_recipes/SteelCutOats.yml
