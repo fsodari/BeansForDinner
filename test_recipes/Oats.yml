@@ -3,13 +3,13 @@ name: Oats
 which: Rolled Oats
 variants:
   Steel Cut Oats:
-    - source: "test_recipes/SteelCutOats.yml"
-      cooking_time: 13.0 # Collections can override arguments.
+    source: "test_recipes/SteelCutOats.yml"
+    cooking_time: 13.0 # Collections can override arguments.
 
   Rolled Oats:
-    - source: "test_recipes/RolledOats.yml"
-      name: rollllled oats
+    source: "test_recipes/RolledOats.yml"
+    name: rollllled oats
 
-  Oat Medley:
-    - source: test_recipes/SteelCutOats.yml
-    - source: test_recipes/RolledOats.yml
+  # Oat Medley:
+  #   source: test_recipes/SteelCutOats.yml
+  #   source: test_recipes/RolledOats.yml
