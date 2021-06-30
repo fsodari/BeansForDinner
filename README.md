@@ -1,6 +1,7 @@
 ## Set up a python virtualenvironment
 
     python3 -m venv vbeans
+    source vbeans/bin/activate
 
 ## Install all requirements
 
