@@ -1,4 +1,4 @@
-## Set up a python virtualenvironment
+## Set up a python virtual environment
 
     python3 -m venv vbeans
     source vbeans/bin/activate
