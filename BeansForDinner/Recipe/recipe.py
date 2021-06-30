@@ -5,6 +5,9 @@ class Recipe:
     # This is the attribute where recipe information is stored.
     def __init__(self) -> None:
         self.rcp = {}
+        self.rcp['cooking_time'] = 0.0
+        self.rcp['amount'] = 1.0
+
         logging.info(f"Recipe Init")
 
     def override(self, config:dict) -> None:
@@ -19,11 +22,17 @@ class Recipe:
             if k != 'variants' and k != 'ingredients':
                 orig[k] = new[k]
         if 'variants' in new and merge_var:
-            for k in new['variants']:
-                orig['variants'][k] = new['variants'][k]
+            if 'variants' not in orig:
+                orig['variants'] = new['variants']
+            else:
+                for k in new['variants']:
+                    orig['variants'][k] = new['variants'][k]
         if 'ingredients' in new and merge_ingr:
-            for k in new['ingredients']:
-                orig['ingredients'][k] = new['ingredients'][k]
+            if 'ingredients' not in orig:
+                orig['ingredients'] = new['ingredients']
+            else:
+                for k in new['ingredients']:
+                    orig['ingredients'][k] = new['ingredients'][k]
         return orig
 
     # These are detailed formatting options. They can be overridden with user customizations if you're getting super custom.
