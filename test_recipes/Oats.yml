@@ -13,3 +13,10 @@ variants:
   Oat Medley: # Using a list for the recipe
     - source: test_recipes/SteelCutOats.yml
     - source: test_recipes/RolledOats.yml
+
+  # Oat Medley:
+  #   name: Oat Medley
+  #   ingredients:
+  #     base:
+  #       - source: test_recipes/SteelCutOats.yml
+  #       - source: test_recipes/RolledOats.yml

@@ -16,7 +16,7 @@ def RecipeFactory(u_config):
     # Check what kind of config was passed. This can accept a config dict or a list of recipes to be used to make a composite.
     try:
         test_slice = u_config[:0]
-        return composite.Composite(u_config, from_list=True)
+        return composite.Composite(u_config)
     except TypeError:
         if not hasattr(u_config, 'keys'):
             raise TypeError("Recipe Factory User Config must be a dict or a list!")

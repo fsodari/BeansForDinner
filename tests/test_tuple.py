@@ -2,18 +2,26 @@ from BeansForDinner import RecipeFactory
 
 def test_simple():
     foobar = RecipeFactory([{'name':'Foo'},{'name':'Bar'}])
-    assert foobar.rcp['name'] == 'Foo and Bar'
-    assert foobar.rcp['ingredients']['Foo'].rcp['name'] == 'Foo'
-    assert foobar.rcp['ingredients']['Bar'].rcp['name'] == 'Bar'
+    assert foobar.name() == 'Foo and Bar'
+    assert foobar.ingredients()[0].name() == 'Foo'
+    assert foobar.ingredients()[1].name() == 'Bar'
 
 def test_collection_tuple():
     oats = RecipeFactory({'which':'Oat Medley', 'source':'test_recipes/Oats.yml'})
 
-    assert oats.rcp['name'] == 'Steel Cut Oats and Rolled Oats'
+    assert oats.name() == 'Steel Cut Oats and Rolled Oats'
 
 def test_composite_tuple():
     quinoa_oatmeal = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
     # Tuples or lists work fine.
     quinoa_oatmeal.override({'ingredients':{'base':({'source':'test_recipes/SteelCutOats.yml'}, {'source':'test_recipes/Quinoa.yml'})}})
 
-    assert quinoa_oatmeal.rcp['ingredients']['base'].rcp['name'] == "Steel Cut Oats and Quinoa"
+    assert quinoa_oatmeal.rcp['ingredients']['base'].name() == "Steel Cut Oats and Quinoa"
+
+def test_nameless():
+    # The smoothie has no named ingredients. Just a list of recipes.
+    # The recipe factory should create a composite from the list.
+    smoodie = RecipeFactory({'source':'test_recipes/Smoothie.yml'})
+    assert smoodie.name() == 'Smoothie'
+    assert smoodie.ingredients()[0].name() == 'Berries'
+    assert smoodie.ingredients()[0].amount() == 1.1
