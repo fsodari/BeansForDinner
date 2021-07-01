@@ -1,0 +1,7 @@
+name: Smoothie
+ingredients:
+  # Nameless ingredient list.
+  - name: Berries
+    amount: 1.1
+  - source: test_recipes/Water.yml
+  - name: Flax Seeds
