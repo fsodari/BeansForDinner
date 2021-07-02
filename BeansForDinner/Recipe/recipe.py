@@ -1,5 +1,5 @@
 import logging
-from os import stat
+import yaml
 
 def ingr_iter(thething):
     if isinstance(thething, dict):
@@ -51,7 +51,7 @@ class Recipe:
         self.rcp = {}
         # Sensible defaults.
         self.rcp['name'] = 'noname'
-        self.rcp['cooking_time'] = 0.0
+        self.rcp['cooking time'] = 0.0
         self.rcp['units'] = 'g'
         self.rcp['density'] = 1.0 # kg/m**3. Need to give user a tool and procedure to add this. It's very optional though
         self.rcp['amount'] = 1.0 # using 'units'
@@ -69,10 +69,20 @@ class Recipe:
 
     def cooking_time(self) -> float:
         """ Returns the recipe's cooking time as a float """
-        return self.rcp['cooking_time']
+        return self.rcp['cooking time']
 
     def amount(self) -> float:
         return self.rcp['amount']
+
+    def export(self, output_file:str):
+        """
+        Export recipe config as a yaml file.
+        If 'source' exists as a top level parameter, it will be changed to 'original source'
+        """
+        with open(output_file, 'w') as stream:
+            exp_cfg = self.rcp
+            exp_cfg['original source'] = exp_cfg.pop('source')
+            yaml.dump(self.rcp, stream, sort_keys=False)
 
     # These are detailed formatting options. They can be overridden with user customizations if you're getting super custom.
     def _title_header(self) -> str:

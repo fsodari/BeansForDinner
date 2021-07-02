@@ -6,7 +6,7 @@ variants:
 
   Steel Cut Oats:
     source: "test_recipes/SteelCutOats.yml"
-    cooking_time: 13.0 # Collections can override arguments.
+    cooking time: 13.0 # Collections can override arguments.
 
   Oat Medley: # Using a list for the recipe
     ingredients:

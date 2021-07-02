@@ -1,18 +1,6 @@
 import os
-from typing import OrderedDict
 import yaml
-    
-def represent_ordereddict(dumper, data):
-    value = []
-
-    for item_key, item_value in data.items():
-        node_key = dumper.represent_data(item_key)
-        node_value = dumper.represent_data(item_value)
-
-        value.append((node_key, node_value))
-
-    return yaml.nodes.MappingNode(u'tag:yaml.org,2002:map', value)
-
+ 
 def sort_recipe_config(config:dict) -> dict:
     """
     When exporting a recipe, sort the fields so that name and source are at the top.
@@ -45,8 +33,3 @@ def import_recipe(config_file:str) -> dict:
         config['name'] = filebasename
 
     return config
-
-def export_recipe(config:dict, config_file:str) -> None:
-    """Save a configuration dict as a yaml file."""
-    with open(config_file, 'w') as stream:
-        yaml.dump(config, stream, sort_keys=False)

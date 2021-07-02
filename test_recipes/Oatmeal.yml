@@ -3,7 +3,7 @@ ingredients:
   base:
     source: test_recipes/Oats.yml # Using collection as ingredient.
     which: Steel Cut Oats
-    cooking_time: 11.1
+    cooking time: 11.1
   liquid:
     source: test_recipes/Water.yml
-    cooking_time: 5.0
+    cooking time: 5.0

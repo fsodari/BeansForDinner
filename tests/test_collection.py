@@ -22,7 +22,7 @@ def test_new():
     assert oats.name() == 'Rollllled Oats'
 
     # Overriding collection with new variants. Do whatever you want. I don't care.
-    oats = RecipeFactory({'source':'test_recipes/Oats.yml','which':'Groats','variants':{'Groats':{'name':'Groats','cooking_time':20.0}}})
+    oats = RecipeFactory({'source':'test_recipes/Oats.yml','which':'Groats','variants':{'Groats':{'name':'Groats','cooking time':20.0}}})
     
     assert oats.name() == 'Groats'
     assert oats.cooking_time() == 20.0
@@ -32,7 +32,7 @@ def test_overrides():
     oats = RecipeFactory({'source':'test_recipes/Oats.yml', 'which':'Steel Cut Oats'})
 
     # Overrides are applied based on the returned class.
-    oats.override({'name':'SCO','cooking_time':42.0})
+    oats.override({'name':'SCO','cooking time':42.0})
 
     assert oats.name() == 'SCO'
     assert oats.cooking_time() == 42.0

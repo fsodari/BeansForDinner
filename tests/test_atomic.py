@@ -12,7 +12,7 @@ def test_overrides():
     steel = RecipeFactory({'source':'test_recipes/SteelCutOats.yml'})    
 
     # Apply any overrides.
-    steel.override({'name':'sco', 'cooking_time':3.14})
+    steel.override({'name':'sco', 'cooking time':3.14})
 
     assert steel.name() == 'sco'
     assert steel.cooking_time() == 3.14
