@@ -5,8 +5,8 @@ def test_defaults():
     steel = RecipeFactory({'source':'test_recipes/SteelCutOats.yml'})
 
     # This should follow default arguments
-    assert steel.rcp['name'] == 'Steel Cut Oats'
-    assert steel.rcp['cooking_time'] == 14.0
+    assert steel.name() == 'Steel Cut Oats'
+    assert steel.cooking_time() == 14.0
 
 def test_overrides():
     steel = RecipeFactory({'source':'test_recipes/SteelCutOats.yml'})    
@@ -14,8 +14,8 @@ def test_overrides():
     # Apply any overrides.
     steel.override({'name':'sco', 'cooking_time':3.14})
 
-    assert steel.rcp['name'] == 'sco'
-    assert steel.rcp['cooking_time'] == 3.14
+    assert steel.name() == 'sco'
+    assert steel.cooking_time() == 3.14
 
 def test_empty():
     # Recipes must be named!
@@ -24,8 +24,8 @@ def test_empty():
 
     # Try reading a non-existant recipe from source.
     foo = RecipeFactory({'source':'test_recipes/Foo.yml'})
-    assert foo.rcp['name'] == 'Foo'
+    assert foo.name() == 'Foo'
 
     # Try reading a recipe from an empty file
     water = RecipeFactory({'source':'test_recipes/Water.yml'})
-    assert water.rcp['name'] == 'Water'
+    assert water.name() == 'Water'

@@ -1,4 +1,4 @@
-from .recipe import Recipe
+from .recipe import merge_config
 from . import atomic, collection, composite
 import yaml
 import os
@@ -13,12 +13,18 @@ def file_basename(filepath):
 
 # Returns a recipe instance based on the contents of a config dict.
 def RecipeFactory(u_config):
-    # Check what kind of config was passed. This can accept a config dict or a list of recipes to be used to make a composite.
+    """ 
+    Creates a class based on what kind of config was passed.
+    This can accept a config dict or a list of recipes to be used to make a composite.
+    If the config dict contains a 'source' field, the file will be read in and unpacked.
+    If the recipe config contains a 'variants' field, this will return Collection(config)
+    If the recipe config contains an 'ingredients' field, this will return Composite(config)
+    """
     try:
         test_slice = u_config[:0]
-        return composite.Composite(u_config, from_list=True)
+        return composite.Composite(u_config)
     except TypeError:
-        if not hasattr(u_config, 'keys'):
+        if not isinstance(u_config, dict):
             raise TypeError("Recipe Factory User Config must be a dict or a list!")
 
     config = u_config
@@ -37,7 +43,7 @@ def RecipeFactory(u_config):
                     config = {'name':filebasename}
 
                 # Apply any of the user overrides after the source is imported.
-                config = Recipe.merge_config(config, u_config, merge_var=True, merge_ingr=True)
+                config = merge_config(config, u_config, merge_var=True, merge_ingr=True)
                 logging.info(f"Recipe Factory Config: {config}")
         except FileNotFoundError:
             # If the file doesn't exist, create a new recipe using the file name.
