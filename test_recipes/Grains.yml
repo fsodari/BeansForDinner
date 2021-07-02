@@ -1,0 +1,7 @@
+name: Grains
+variants:
+  Oats:
+    source: test_recipes/Oats.yml # Collection inside a collection. Neat.
+  Steel:
+    source: test_recipes/Oats.yml
+    which: Steel Cut Oats

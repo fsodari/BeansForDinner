@@ -15,7 +15,7 @@ class Collection(Recipe):
         # Create a new recipe using the choice
         recipe_choice = config['variants'][which]
         # Apply the config overrides, but keep 'source' unchanged to keep the choice source.
-        merge_config(recipe_choice, config, skip_source=True)
+        merge_config(recipe_choice, config, banned=['source', 'which'])
         # Override name using the which key
         recipe_choice['name'] = which
 

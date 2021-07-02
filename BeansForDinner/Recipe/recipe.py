@@ -15,29 +15,34 @@ def list2dict(ilist) -> dict:
     else:
         return {str(i):ilist[i] for i in range(len(ilist))}
 
-def merge_config(orig_:dict, new:dict, merge_var=False, merge_ingr=False, skip_source=False) -> dict:
+def merge_config(orig:dict, new:dict, r_fields:list=[], banned:list=[]) -> dict:
     """ Merge two configuration dictionaries. Variants and Ingredients get merged independently.
         Entries in orig and new are overwritten by new.
         Entries in new but not orig are appended to orig.
-        Entries in orig but not new are unchanged. """
-    orig = orig_
+        Entries in orig but not new are unchanged.
+        r_fields is a list of fields to be merged recursively.
+        banned is a list of fields to not copy
+    """
+    merged = orig
+        
+    banned.extend(['variants','ingredients'])
+    # Update top level fields.
     for k in new:
-        if k != 'variants' and k != 'ingredients':
-            if k != 'source' or not skip_source:
-                orig[k] = new[k]
-    if 'variants' in new and merge_var:
-        if 'variants' not in orig:
-            orig['variants'] = new['variants']
-        else:
-            for k in new['variants']:
-                orig['variants'][k] = new['variants'][k]
-    if 'ingredients' in new and merge_ingr:
-        if 'ingredients' not in orig:
-            orig['ingredients'] = list2dict(new['ingredients'])
-        else:
-            for k, ingr in list2dict(new['ingredients']).items():
-                orig['ingredients'][k] = ingr
-    return orig
+        if k not in banned:
+            merged[k] = new[k]
+
+    # r_fields are fields that will be recursively merged like 'variants' or 'ingredients'
+    for f in r_fields:
+        if f in new:
+            # Create new dict key
+            if f not in merged:
+                merged[f] = list2dict(new[f])
+            # Update entries if field exists already.
+            else:
+                for k, v in list2dict(new[f]).items():
+                    merged[f][k] = v
+            
+    return merged
 
 # Base Class that all ingredients/recipes should inherit from.
 class Recipe:
@@ -56,7 +61,7 @@ class Recipe:
     def override(self, config:dict) -> None:
         """ Override recipe configurations after the recipe has been initialized """
         # Merge everything by default.
-        self.rcp = self.merge_config(self.rcp, config, merge_var=True, merge_ingr=True)
+        self.rcp = merge_config(self.rcp, config, r_fields=['variants', 'ingredients'])
 
     def name(self) -> str:
         """ Returns the recipes name as a str """

@@ -43,7 +43,7 @@ def RecipeFactory(u_config):
                     config = {'name':filebasename}
 
                 # Apply any of the user overrides after the source is imported.
-                config = merge_config(config, u_config, merge_var=True, merge_ingr=True)
+                config = merge_config(config, u_config, r_fields=['variants', 'ingredients'])
                 logging.info(f"Recipe Factory Config: {config}")
         except FileNotFoundError:
             # If the file doesn't exist, create a new recipe using the file name.

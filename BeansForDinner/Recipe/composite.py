@@ -32,7 +32,7 @@ class Composite(Recipe):
             self.rcp['name'] = ' and '.join([ingr.name() for k, ingr in self.ingredients().items()])
         except TypeError:
             # Using a config dict.
-            self.rcp = merge_config(self.rcp, config, merge_ingr=True)
+            self.rcp = merge_config(self.rcp, config, r_fields=['ingredients'])
             # Convert to dict
             self.rcp['ingredients'] = list2dict(self.rcp['ingredients'])
             for k, ingr_cfg in self.rcp['ingredients'].items():
