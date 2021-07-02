@@ -1,4 +1,4 @@
-from BeansForDinner import RecipeFactory
+from BeansForDinner.Recipe import RecipeFactory
 
 def test_basic():
     oatmeal = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})

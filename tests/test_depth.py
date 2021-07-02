@@ -1,4 +1,4 @@
-from BeansForDinner import RecipeFactory
+from BeansForDinner.Recipe import RecipeFactory
 
 """
 Using collections within collections is possible, however there is no oppurtunity for the

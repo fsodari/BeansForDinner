@@ -1,4 +1,4 @@
-from BeansForDinner import RecipeFactory
+from BeansForDinner.Recipe import RecipeFactory
 import pytest
 
 def test_defaults():

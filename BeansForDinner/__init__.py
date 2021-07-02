@@ -1,1 +1,4 @@
-from .Recipe import RecipeFactory
+from BeansForDinner.Recipe.fileio import import_recipe
+
+
+from . import Recipe

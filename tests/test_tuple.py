@@ -1,4 +1,4 @@
-from BeansForDinner import RecipeFactory
+from BeansForDinner.Recipe import RecipeFactory
 
 def test_simple():
     foobar = RecipeFactory([{'name':'Foo'},{'name':'Bar'}])
