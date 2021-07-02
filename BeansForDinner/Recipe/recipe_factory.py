@@ -18,7 +18,7 @@ def RecipeFactory(u_config):
         test_slice = u_config[:0]
         return composite.Composite(u_config)
     except TypeError:
-        if not hasattr(u_config, 'keys'):
+        if not isinstance(u_config, dict):
             raise TypeError("Recipe Factory User Config must be a dict or a list!")
 
     config = u_config

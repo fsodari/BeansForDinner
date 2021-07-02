@@ -3,7 +3,7 @@ from BeansForDinner import RecipeFactory
 def test_default():
     oats = RecipeFactory({'source':'test_recipes/Oats.yml'})
 
-    assert oats.name() == 'rollllled oats'
+    assert oats.name() == 'Rollllled Oats'
     # Make sure it's using the class overrides
     assert oats.cooking_time() == 5.0
 

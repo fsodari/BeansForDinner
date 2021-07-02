@@ -12,7 +12,7 @@ def test_user_override():
     oats = RecipeFactory({'source':'test_recipes/Oatmeal.yml','ingredients':{'base':{'source':'test_recipes/RolledOats.yml'}}})
     
     assert oats.name() == 'Oatmeal'
-    assert oats.rcp['ingredients']['base'].name() == 'Rolled Oats'
+    assert oats.ingredients()['base'].name() == 'Rolled Oats'
 
 def test_override_later():
     oats = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
@@ -20,4 +20,4 @@ def test_override_later():
     oats.override({'ingredients':{'base':{'source':'test_recipes/RolledOats.yml'}}})
 
     assert oats.name() == 'Oatmeal'
-    assert oats.rcp['ingredients']['base'].name() == 'Rolled Oats'
+    assert oats.ingredients()['base'].name() == 'Rolled Oats'

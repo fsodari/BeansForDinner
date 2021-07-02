@@ -1,4 +1,11 @@
 import logging
+from os import stat
+
+def ingr_iter(thething):
+    if isinstance(thething, dict):
+        return thething
+    else:
+        return range(len(thething))
 
 # Base Class that all ingredients/recipes should inherit from.
 class Recipe:
@@ -31,7 +38,7 @@ class Recipe:
         return self.rcp['amount']
 
     @staticmethod
-    def merge_config(orig_:dict, new:dict, merge_var=False, merge_ingr=False) -> dict:
+    def merge_config(orig_:dict, new:dict, merge_var=False, merge_ingr=False, skip_source=False) -> dict:
         """ Merge two configuration dictionaries. Variants and Ingredients get merged independently.
             Entries in orig and new are overwritten by new.
             Entries in new but not orig are appended to orig.
@@ -39,7 +46,8 @@ class Recipe:
         orig = orig_
         for k in new:
             if k != 'variants' and k != 'ingredients':
-                orig[k] = new[k]
+                if k != 'source' or not skip_source:
+                    orig[k] = new[k]
         if 'variants' in new and merge_var:
             if 'variants' not in orig:
                 orig['variants'] = new['variants']

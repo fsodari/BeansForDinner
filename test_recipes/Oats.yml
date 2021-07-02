@@ -1,22 +1,15 @@
 # Collections are virtual base classes. They must reference other
 name: Oats
-which: Rolled Oats
+which: Rollllled Oats
 variants:
   Steel Cut Oats:
     source: "test_recipes/SteelCutOats.yml"
     cooking_time: 13.0 # Collections can override arguments.
 
-  Rolled Oats:
+  Rollllled Oats:
     source: "test_recipes/RolledOats.yml"
-    name: rollllled oats
 
   Oat Medley: # Using a list for the recipe
-    - source: test_recipes/SteelCutOats.yml
-    - source: test_recipes/RolledOats.yml
-
-  # Oat Medley:
-  #   name: Oat Medley
-  #   ingredients:
-  #     base:
-  #       - source: test_recipes/SteelCutOats.yml
-  #       - source: test_recipes/RolledOats.yml
+    ingredients:
+      - source: test_recipes/SteelCutOats.yml
+      - source: test_recipes/RolledOats.yml
