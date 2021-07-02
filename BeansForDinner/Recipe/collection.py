@@ -5,7 +5,6 @@ import logging
 class Collection(Recipe):
     def __new__(cls:Recipe, config:dict={}):
         logging.info(f"Collection Config: {config}")
-        # If no default given, the first element is used.
         if 'which' in config:
             # If the choice is not in the variants, use the default.
             if config['which'] in config['variants']:

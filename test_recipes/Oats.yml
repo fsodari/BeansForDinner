@@ -1,13 +1,12 @@
-# Collections are virtual base classes. They must reference other
+# Collections are virtual classes. It will return whichever variant is selected.
 name: Oats
-which: Rollllled Oats
 variants:
+  Rollllled Oats:
+    source: "test_recipes/RolledOats.yml"
+
   Steel Cut Oats:
     source: "test_recipes/SteelCutOats.yml"
     cooking_time: 13.0 # Collections can override arguments.
-
-  Rollllled Oats:
-    source: "test_recipes/RolledOats.yml"
 
   Oat Medley: # Using a list for the recipe
     ingredients:

@@ -13,7 +13,13 @@ def file_basename(filepath):
 
 # Returns a recipe instance based on the contents of a config dict.
 def RecipeFactory(u_config):
-    # Check what kind of config was passed. This can accept a config dict or a list of recipes to be used to make a composite.
+    """ 
+    Creates a class based on what kind of config was passed.
+    This can accept a config dict or a list of recipes to be used to make a composite.
+    If the config dict contains a 'source' field, the file will be read in and unpacked.
+    If the recipe config contains a 'variants' field, this will return Collection(config)
+    If the recipe config contains an 'ingredients' field, this will return Composite(config)
+    """
     try:
         test_slice = u_config[:0]
         return composite.Composite(u_config)

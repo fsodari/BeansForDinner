@@ -19,7 +19,7 @@ def test_new():
     # If the choice is not in the collection, default is created.
     oats = RecipeFactory({'source':'test_recipes/Oats.yml', 'which':'Groats'})
 
-    assert oats.name() == 'Steel Cut Oats'
+    assert oats.name() == 'Rollllled Oats'
 
     # Overriding collection with new variants. Do whatever you want. I don't care.
     oats = RecipeFactory({'source':'test_recipes/Oats.yml','which':'Groats','variants':{'Groats':{'name':'Groats','cooking_time':20.0}}})
