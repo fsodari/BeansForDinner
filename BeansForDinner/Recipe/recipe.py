@@ -7,6 +7,38 @@ def ingr_iter(thething):
     else:
         return range(len(thething))
 
+def list2dict(ilist) -> dict:
+    """The indices of the list are converted to strings and used as keys for the new dict. If a dict is passed in,
+    it will return it unchanged."""
+    if isinstance(ilist, dict):
+        return ilist
+    else:
+        return {str(i):ilist[i] for i in range(len(ilist))}
+
+def merge_config(orig_:dict, new:dict, merge_var=False, merge_ingr=False, skip_source=False) -> dict:
+    """ Merge two configuration dictionaries. Variants and Ingredients get merged independently.
+        Entries in orig and new are overwritten by new.
+        Entries in new but not orig are appended to orig.
+        Entries in orig but not new are unchanged. """
+    orig = orig_
+    for k in new:
+        if k != 'variants' and k != 'ingredients':
+            if k != 'source' or not skip_source:
+                orig[k] = new[k]
+    if 'variants' in new and merge_var:
+        if 'variants' not in orig:
+            orig['variants'] = new['variants']
+        else:
+            for k in new['variants']:
+                orig['variants'][k] = new['variants'][k]
+    if 'ingredients' in new and merge_ingr:
+        if 'ingredients' not in orig:
+            orig['ingredients'] = list2dict(new['ingredients'])
+        else:
+            for k, ingr in list2dict(new['ingredients']).items():
+                orig['ingredients'][k] = ingr
+    return orig
+
 # Base Class that all ingredients/recipes should inherit from.
 class Recipe:
     def __init__(self) -> None:
@@ -36,31 +68,6 @@ class Recipe:
 
     def amount(self) -> float:
         return self.rcp['amount']
-
-    @staticmethod
-    def merge_config(orig_:dict, new:dict, merge_var=False, merge_ingr=False, skip_source=False) -> dict:
-        """ Merge two configuration dictionaries. Variants and Ingredients get merged independently.
-            Entries in orig and new are overwritten by new.
-            Entries in new but not orig are appended to orig.
-            Entries in orig but not new are unchanged. """
-        orig = orig_
-        for k in new:
-            if k != 'variants' and k != 'ingredients':
-                if k != 'source' or not skip_source:
-                    orig[k] = new[k]
-        if 'variants' in new and merge_var:
-            if 'variants' not in orig:
-                orig['variants'] = new['variants']
-            else:
-                for k in new['variants']:
-                    orig['variants'][k] = new['variants'][k]
-        if 'ingredients' in new and merge_ingr:
-            if 'ingredients' not in orig:
-                orig['ingredients'] = new['ingredients']
-            else:
-                for k in new['ingredients']:
-                    orig['ingredients'][k] = new['ingredients'][k]
-        return orig
 
     # These are detailed formatting options. They can be overridden with user customizations if you're getting super custom.
     def _title_header(self) -> str:

@@ -1,4 +1,4 @@
-from .recipe import Recipe
+from .recipe import merge_config
 from . import atomic, collection, composite
 import yaml
 import os
@@ -43,7 +43,7 @@ def RecipeFactory(u_config):
                     config = {'name':filebasename}
 
                 # Apply any of the user overrides after the source is imported.
-                config = Recipe.merge_config(config, u_config, merge_var=True, merge_ingr=True)
+                config = merge_config(config, u_config, merge_var=True, merge_ingr=True)
                 logging.info(f"Recipe Factory Config: {config}")
         except FileNotFoundError:
             # If the file doesn't exist, create a new recipe using the file name.

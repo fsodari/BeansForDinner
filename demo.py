@@ -22,14 +22,14 @@ if __name__ == '__main__':
     oatmeal = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
     # Using Composite overrides in file
     print(f"Oatmeal: Name: {oatmeal.name()}")
-    print(f"Oatmeal Base: {oatmeal.rcp['ingredients']['base'].name()}, Liquid: {oatmeal.rcp['ingredients']['liquid'].name()}")
+    print(f"Oatmeal Base: {oatmeal.ingredients()['base'].name()}, Liquid: {oatmeal.ingredients()['liquid'].name()}")
 
     # Use a different ingredient from the oats collection.
     oatmeal2 = RecipeFactory({'source':'test_recipes/Oatmeal.yml'})
     # Override the ingredients. Aren't config dicts so simple...ha...
     oatmeal2.override({'ingredients':{'base':{'source':'test_recipes/RolledOats.yml'}}})
 
-    print(f"Oatmeal2 Base: {oatmeal2.rcp['ingredients']['base'].name()}, Liquid: {oatmeal2.rcp['ingredients']['liquid'].name()}")
+    print(f"Oatmeal2 Base: {oatmeal2.ingredients()['base'].name()}, Liquid: {oatmeal2.ingredients()['liquid'].name()}")
     print(f"Total Cook Time: {oatmeal2.cooking_time()}")
 
     # We can create Composites on-the-fly using a list/tuple
@@ -42,4 +42,5 @@ if __name__ == '__main__':
                 {'source':'test_recipes/Quinoa.yml'}]
             }})
 
-    print(f"Quinoa Oatmeal Base: {quinoa_oatmeal.rcp['ingredients']['base'].name()}")
+    print(f"Quinoa Oatmeal Base: {quinoa_oatmeal.ingredients()['base'].name()}")
+    print(f"Quinoa Oatmeal Liquid: {quinoa_oatmeal.ingredients()['liquid'].name()}")
