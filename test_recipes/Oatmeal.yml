@@ -7,3 +7,7 @@ ingredients:
   liquid:
     source: test_recipes/Water.yml
     cooking time: 5.0
+
+  topping:
+    source: onion
+    instructions: $chop(name), chop oni

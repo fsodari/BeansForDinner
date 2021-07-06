@@ -1,11 +1,11 @@
 import logging
 import yaml
 
-def ingr_iter(thething):
-    if isinstance(thething, dict):
-        return thething
-    else:
-        return range(len(thething))
+# def ingr_iter(thething):
+#     if isinstance(thething, dict):
+#         return thething
+#     else:
+#         return range(len(thething))
 
 def list2dict(ilist) -> dict:
     """The indices of the list are converted to strings and used as keys for the new dict. If a dict is passed in,
@@ -63,6 +63,10 @@ class Recipe:
         # Merge everything by default.
         self.rcp = merge_config(self.rcp, config, r_fields=['variants', 'ingredients'])
 
+    def ingredients(self) -> dict:
+        """Returns list of ingredients used in the recipe."""
+        return {}
+
     def name(self) -> str:
         """ Returns the recipes name as a str """
         return self.rcp['name']
@@ -73,6 +77,10 @@ class Recipe:
 
     def amount(self) -> float:
         return self.rcp['amount']
+
+    def iamount(self, ingr_name:str) -> float:
+        """Returns the total amount of an ingredient found in the top level recipe."""
+        return self.amount() if ingr_name == self.name() else 0.0
 
     def export(self, output_file:str):
         """

@@ -1,4 +1,4 @@
-from BeansForDinner import RecipeFactory
+from BeansForDinner.Recipe import RecipeFactory
 
 # Demonstration of the Recipe Factory
 if __name__ == '__main__':

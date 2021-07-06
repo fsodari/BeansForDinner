@@ -15,3 +15,7 @@ class Atomic(Recipe):
         logging.info(f"Atomic Override Config: {config}")
         self.rcp = merge_config(self.rcp, config)
         logging.info(f"Atomic Override: {self.rcp}")
+
+    def ingredients(self) -> dict:
+        """Atomics return themselves as their ingredients list."""
+        return {'0':self}

@@ -23,14 +23,15 @@ def RecipeFactory(u_config):
         if not isinstance(u_config, dict):
             raise TypeError("Recipe Factory User Config must be a dict or a list!")
 
-    config = u_config
-    logging.info(f"User Config: {config}")
+    logging.info(f"User Config: {u_config}")
     # If a source file is provided, import the yaml file and use it as the config.
     # Any additional user config parameters are used as overrides.
-    if 'source' in config.keys():
-        config = import_recipe(config['source'])
+    if 'source' in u_config.keys():
+        config = import_recipe(u_config['source'])
         config = merge_config(config, u_config, r_fields=['variants', 'ingredients'])
         logging.info(f"Recipe Factory Config: {config}")
+    else:
+        config = u_config
 
     # A name is required for recipes created from a dict
     if 'name' not in config.keys():

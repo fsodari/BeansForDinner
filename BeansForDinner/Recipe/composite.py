@@ -7,7 +7,7 @@ A composite can be built from a dictionary of ingredients or from a list. If bui
 the keys will the integer indices converted to a decimal string.
 """
 
-from .recipe import Recipe, ingr_iter, list2dict, merge_config
+from .recipe import Recipe, list2dict, merge_config
 from . import recipe_factory
 import logging
 
@@ -57,3 +57,17 @@ class Composite(Recipe):
     def cooking_time(self) -> float:
         """Sum all ingredients cooking time."""
         return sum([ingr.cooking_time() for ingr in self.ingredients().values()])
+
+    def amount(self) -> float:
+        return sum([ingr.amount() for ingr in self.ingredients().values()])
+
+    def iamount(self, ingr_name:str) -> float:
+        """
+        Returns the total amount of an ingredient found in the top level recipe.
+        Searches through all sub ingredients.
+        """
+        amt = 0.0
+        for ingr in self.ingredients().values():
+            print(f"foo {ingr}")
+            amt += ingr.iamount(ingr_name)
+        return amt
