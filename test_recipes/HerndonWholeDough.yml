@@ -1,0 +1,30 @@
+name: Herndon Whole Dough
+units: g
+servings: 2
+ingredients:
+  levain:
+    source: test_recipes/Ellevain.yml
+  flour:
+    - name: Whole Wheat Flour
+      amount: 460
+    - name: White Flour
+      amount: 290
+    - name: Rye Flour
+      amount: 50
+  liquid:
+    source: test_recipes/Water.yml
+    amount: 640
+  seasoning:
+    name: Salt
+    amount: 22
+
+timeline:
+  - feed: 6:30 
+  - auto: 0:30
+  - mix: 0:05
+  - fold:
+    - 0:10
+    - 0:30
+    - 0:30
+    - 0:30
+  - shape: 3:15

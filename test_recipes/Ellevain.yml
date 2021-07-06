@@ -1,0 +1,10 @@
+name: Ellevain
+units: g
+servings: 1
+ingredients:
+  - name: Whole Wheat Flour
+    amount: 40
+  - name: White Flour
+    amount: 160
+  - source: test_recipes/Water.yml
+    amount: 160

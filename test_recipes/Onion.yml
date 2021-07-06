@@ -1,0 +1,4 @@
+name: Onion
+callbacks:
+  chop: chopping instructions
+  saute: saute instructions

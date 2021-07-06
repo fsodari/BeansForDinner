@@ -1,0 +1,12 @@
+name: Herndon Whole Boule
+ingredients:
+  dough:
+    source: test_recipes/HerndonWholeBoule.yml
+
+timeline:
+  - preheat: 0:45
+    temp: 500
+  - bake: 0:30
+    temp: 475
+  - bake2: 0:10
+    temp: 475
