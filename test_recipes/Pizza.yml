@@ -1,0 +1,14 @@
+name: Pizza
+ingredients:
+  dough:
+    source: test_recipes/HerndonWholeDough.yml
+    servings: 1
+  sauce:
+    source: test_recipes/PizzaSauce.yml
+  toppings:
+    - name: Miyokos Mozzarella
+    - name: Squash
+    - name: Zucchini
+    - name: Bell Peppers
+    - name: Onion
+    - name: Jalapeno
